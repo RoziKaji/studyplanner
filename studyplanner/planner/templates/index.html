@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="flex w-full flex-col lg:flex-row drawer">
+    <input id="my-drawer-2" type="checkbox" class="drawer-toggle" />
+
+    <div class="drawer-side">
+        <label for="my-drawer-2" aria-label="close sidebar" class="drawer-overlay"></label>
+        <button>create</button>
+        {% if subjects %}
+        <ul class="menu bg-base-200 text-base-content min-h-full w-80 p-4">
+            {% for subject in subjects %}
+            <li onmouseover="this.style.backgroundColor='{{ subject.color }}'"
+                onmouseout="this.style.backgroundColor=''" style="transition: background-color 0.2s;">
+                <span class="flex justify-between">
+                <a>{{ subject.name }}</a>
+                <div><button class="btn btn-ghost btn-xs">
+                        <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="15" height="15"
+                            viewBox="0 0 24 24">
+                            <path
+                                d="M 19.171875 2 C 18.448125 2 17.724375 2.275625 17.171875 2.828125 L 16 4 L 20 8 L 21.171875 6.828125 C 22.275875 5.724125 22.275875 3.933125 21.171875 2.828125 C 20.619375 2.275625 19.895625 2 19.171875 2 z M 14.5 5.5 L 3 17 L 3 21 L 7 21 L 18.5 9.5 L 14.5 5.5 z">
+                            </path>
+                        </svg>
+                    </button>
+                </div>
+                </span>
+            </li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+    </div>
+
+    <div class="drawer-content flex flex-col lg:flex-row gap-4 p-4">
+        {% if not subjects %}
+        <div class="alert alert-info shadow-lg mt-4">
+            <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current shrink-0 h-6 w-6" fill="none"
+                viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M13 16h-1v-4h-1m1-4h.01M21 12c0 4.418-3.582 8-8 8s-8-3.582-8-8 3.582-8 8-8 8 3.582 8 8z" />
+            </svg>
+            <span>هیچ درسی هنوز اضافه نشده!</span>
+        </div>
+        {% endif %}
+
+        <div class="card bg-base-300 border-2 border-amber-500 rounded-box grow">
+            this is supposed to show the study sessions
+        </div>
+        <div class="card bg-base-300 border-2 border-slate-500 rounded-box grow">
+            calendar
+        </div>
+    </div>
+</div>
+{% endblock %}

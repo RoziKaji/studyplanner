@@ -1,0 +1,92 @@
+{% load static %}
+{% load static tailwind_tags %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    {% tailwind_css %}
+
+</head>
+
+<body>
+    <div class="navbar flex justify-between bg-base-100 shadow-sm">
+<div class="flex-none">
+    <label for="my-drawer-2" class="btn btn-square btn-ghost drawer-button">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+            class="inline-block h-5 w-5 stroke-current">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+        </svg>
+    </label>
+</div>
+
+
+
+        <div class="navbar-center">
+            <a class="btn btn-ghost text-xl">Studyplanner</a>
+        </div>
+
+        <div class="flex">
+            <div class="dropdown">
+                <div tabindex="0" role="button" class="btn btn-ghost lg:hidden">
+                    <svg xmlns="https://img.icons8.com/?size=100&id=GvQH0euDgd7J&format=png&color=000000" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M4 6h16M4 12h8m-8 6h16" />
+                    </svg>
+                </div>
+                <ul tabindex="0" class="menu menu-sm dropdown-content bg-base-100 rounded-box z-1 mt-3 w-52 p-2 shadow">
+                    <li>
+                        <a>calender mode</a>
+                        <ul class="p-2">
+                            <li><a>daily</a></li>
+                            <li><a>weekly</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+            <div class="navbar-center hidden lg:flex">
+                <ul class="menu menu-horizontal px-1">
+                    <li>
+                        <details>
+                            <summary>calender</summary>
+                            <ul class="p-2">
+                                <li><a>daily</a></li>
+                                <li><a>weekly</a></li>
+                            </ul>
+                        </details>
+                    </li>
+                </ul>
+            </div>
+            <div class="flex-none">
+                <div class="dropdown dropdown-end">
+                    <div tabindex="0" role="button" class="btn btn-ghost btn-circle avatar h-15 w-15">
+                        <div class="w-10 rounded-full">
+                            <img src="{% static 'media/user_menu.png' %}" class="object-fill w-15 h-15" alt="User Menu">
+                        </div>
+                    </div>
+                    <ul tabindex="0"
+                        class="menu menu-sm dropdown-content bg-base-100 rounded-box z-1 mt-3 w-52 p-2 shadow">
+                        <li>
+                            <a class="justify-between">
+                                Profile
+                                <span class="badge">New</span>
+                            </a>
+                        </li>
+                        <li><a>Settings</a></li>
+                        <li><a>Logout</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+
+    {% block content %}
+    {% endblock %}
+</body>
+
+</html>
