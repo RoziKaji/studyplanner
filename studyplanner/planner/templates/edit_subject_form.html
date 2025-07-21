@@ -1,0 +1,9 @@
+
+    <form method="post" hx-post="{% url 'planner:subject_edit' subject.id %}" hx-target="#edit-subject-modal-body"
+        hx-swap="outerHTML" class="flex flex-col items-end space-y-4">
+        {% csrf_token %}
+        <div class="w-full border-slate-500">
+            {{ form.as_p }}
+        </div>
+        <button type="submit" class="btn self-end">ذخیره</button>
+    </form>

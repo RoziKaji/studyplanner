@@ -6,7 +6,19 @@
 
     <div class="drawer-side">
         <label for="my-drawer-2" aria-label="close sidebar" class="drawer-overlay"></label>
-        <button>create</button>
+
+
+        <button id="add-button" class="btn btn-ghost btn-xs"
+            style="position: absolute; top: 5px; right: 5px; z-index: 50;" hx-get="{% url 'planner:subject_add' %}"
+            hx-target="#add-subject-modal-body" hx-trigger="click" onclick="add_subject_modal.showModal()">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                <path fill="none" d="M0 0h24v24H0V0z"></path>
+                <path
+                    d="M18 13h-5v5c0 .55-.45 1-1 1s-1-.45-1-1v-5H6c-.55 0-1-.45-1-1s.45-1 1-1h5V6c0-.55.45-1 1-1s1 .45 1 1v5h5c.55 0 1 .45 1 1s-.45 1-1 1z">
+                </path>
+            </svg>
+        </button>
+
         {% if subjects %}
         <ul class="menu bg-base-200 text-base-content min-h-full w-80 p-4">
             {% for subject in subjects %}
@@ -14,27 +26,77 @@
                 onmouseout="this.style.backgroundColor=''" style="transition: background-color 0.2s;">
                 <span class="flex justify-between">
                     <a>{{ subject.name }}</a>
-                    <div><a href="{% url 'planner:subject_edit' subjecs_id=subject.id %}" class="btn btn-ghost btn-xs">
+                    <div><button hx-get="{% url 'planner:subject_edit' subject.id %}"
+                            hx-target="#edit-subject-modal-body" hx-trigger="click"
+                            onclick="edit_subject_modal.showModal()" class="btn btn-ghost btn-xs">
                             <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="15" height="15"
                                 viewBox="0 0 24 24">
                                 <path
                                     d="M 19.171875 2 C 18.448125 2 17.724375 2.275625 17.171875 2.828125 L 16 4 L 20 8 L 21.171875 6.828125 C 22.275875 5.724125 22.275875 3.933125 21.171875 2.828125 C 20.619375 2.275625 19.895625 2 19.171875 2 z M 14.5 5.5 L 3 17 L 3 21 L 7 21 L 18.5 9.5 L 14.5 5.5 z">
                                 </path>
                             </svg>
-                        </a>
-                        <button class="btn btn-ghost btn-xs">
+                        </button>
+
+                        <button hx-get="{% url 'planner:delete_subject' subject.id %}"
+                            hx-target="#delete-subject-modal-body" hx-trigger="click"
+                            onclick="delete_subject_modal.showModal()" class="btn btn-ghost btn-xs">
                             <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="18" height="18"
                                 viewBox="0 0 64 64">
                                 <path
                                     d="M 28 7 C 25.243 7 23 9.243 23 12 L 23 15 L 13 15 C 11.896 15 11 15.896 11 17 C 11 18.104 11.896 19 13 19 L 15.109375 19 L 16.792969 49.332031 C 16.970969 52.510031 19.600203 55 22.783203 55 L 41.216797 55 C 44.398797 55 47.029031 52.510031 47.207031 49.332031 L 48.890625 19 L 51 19 C 52.104 19 53 18.104 53 17 C 53 15.896 52.104 15 51 15 L 41 15 L 41 12 C 41 9.243 38.757 7 36 7 L 28 7 z M 28 11 L 36 11 C 36.552 11 37 11.449 37 12 L 37 15 L 27 15 L 27 12 C 27 11.449 27.448 11 28 11 z M 19.113281 19 L 44.886719 19 L 43.212891 49.109375 C 43.153891 50.169375 42.277797 51 41.216797 51 L 22.783203 51 C 21.723203 51 20.846109 50.170328 20.787109 49.111328 L 19.113281 19 z M 32 23.25 C 31.033 23.25 30.25 24.034 30.25 25 L 30.25 45 C 30.25 45.966 31.033 46.75 32 46.75 C 32.967 46.75 33.75 45.966 33.75 45 L 33.75 25 C 33.75 24.034 32.967 23.25 32 23.25 z M 24.642578 23.251953 C 23.677578 23.285953 22.922078 24.094547 22.955078 25.060547 L 23.652344 45.146484 C 23.685344 46.091484 24.462391 46.835938 25.400391 46.835938 C 25.421391 46.835938 25.441891 46.835938 25.462891 46.835938 C 26.427891 46.801938 27.183391 45.991391 27.150391 45.025391 L 26.453125 24.939453 C 26.419125 23.974453 25.606578 23.228953 24.642578 23.251953 z M 39.355469 23.251953 C 38.388469 23.224953 37.580875 23.974453 37.546875 24.939453 L 36.849609 45.025391 C 36.815609 45.991391 37.571109 46.801938 38.537109 46.835938 C 38.558109 46.836938 38.578609 46.835938 38.599609 46.835938 C 39.537609 46.835938 40.314656 46.091484 40.347656 45.146484 L 41.044922 25.060547 C 41.078922 24.094547 40.321469 23.285953 39.355469 23.251953 z">
                                 </path>
                             </svg>
-
                         </button>
                     </div>
                 </span>
             </li>
             {% endfor %}
+            <dialog id="edit_subject_modal" class="modal modal-bottom sm:modal-middle">
+                <div class="modal-box w-1/8">
+                    <div id="edit-subject-modal-body">
+                        <!-- Form will be loaded here -->
+                    </div>
+                    <div class="modal-action">
+                        <form method="dialog">
+                            <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
+                        </form>
+                    </div>
+                </div>
+            </dialog>
+
+
+
+            <dialog id="delete_subject_modal" class="modal modal-bottom sm:modal-middle">
+                <div class="modal-box w-1/8">
+                    <div id="delete-subject-modal-body">
+                        <!-- Delete confirmation form will be loaded here -->
+                    </div>
+                    <div class="modal-action">
+                        <form method="dialog">
+                            <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
+                        </form>
+                    </div>
+                </div>
+            </dialog>
+
+
+
+            <dialog id="add_subject_modal" class="modal modal-bottom sm:modal-middle">
+                <div class="modal-box w-1/8">
+                    <div id="add-subject-modal-body">
+                        <!-- Add form will be loaded here -->
+                    </div>
+                    <div class="modal-action">
+                        <form method="dialog">
+                            <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
+                        </form>
+                    </div>
+                </div>
+            </dialog>
+
+
+
+
         </ul>
         {% endif %}
     </div>
