@@ -13,4 +13,5 @@ urlpatterns = [
     path('add/', views.add_studysession, name='add_studysession'),
     path('delete-session/', views.delete_session, name='delete_session'),
     path('edit-session/', views.edit_session, name='edit_session'),
+    path('api/events/', views.events_api, name='events_api'),
 ]

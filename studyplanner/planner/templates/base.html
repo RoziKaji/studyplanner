@@ -9,6 +9,7 @@
     <title>Document</title>
     {% tailwind_css %}
     <script src="https://unpkg.com/htmx.org@1.9.2"></script>
+    <link href='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/main.min.css' rel='stylesheet' />
 
 </head>
 
@@ -38,28 +39,6 @@
                             d="M4 6h16M4 12h8m-8 6h16" />
                     </svg>
                 </div>
-                <ul tabindex="0" class="menu menu-sm dropdown-content bg-base-100 rounded-box z-1 mt-3 w-52 p-2 shadow">
-                    <li>
-                        <a>تقویم</a>
-                        <ul class="p-2">
-                            <li><a>روزانه</a></li>
-                            <li><a>هفتگی</a></li>
-                        </ul>
-                    </li>
-                </ul>
-            </div>
-            <div class="navbar-center hidden lg:flex">
-                <ul class="menu menu-horizontal px-1">
-                    <li>
-                        <details>
-                            <summary>تقویم</summary>
-                            <ul class="p-2">
-                                <li><a>روزانه</a></li>
-                                <li><a>هفتگی</a></li>
-                            </ul>
-                        </details>
-                    </li>
-                </ul>
             </div>
             <div class="flex-none">
                 <div class="dropdown dropdown-end">
@@ -85,7 +64,7 @@
 
 
     </div>
-
+<script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/index.global.min.js'></script>
     {% block content %}
     {% endblock %}
 </body>

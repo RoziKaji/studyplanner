@@ -342,8 +342,34 @@
 
 
 
-<div class="card bg-base-300 border-2 border-slate-500 rounded-box grow">
-    calendar
+<div class="card bg-base-300 border-2 border-slate-500 rounded-box w-full h-full">
+    <div class="p-4">
+        <div id="calendar" class="bg-base-100 p-2 rounded-xl shadow min-h-[500px] overflow-x-auto"></div>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const calendarEl = document.getElementById('calendar');
+            const calendar = new FullCalendar.Calendar(calendarEl, {
+                initialView: 'dayGridMonth',
+                height: 'auto',
+                headerToolbar: {
+                    left: 'prev,next today',
+                    center: 'title',
+                    right: 'timeGridDay,timeGridWeek,dayGridMonth'
+                },
+                events: '/planner/api/events/',  // این endpoint رو در مرحله بعد می‌سازیم
+                dateClick: function (info) {
+                    alert('روزی که کلیک شد: ' + info.dateStr);
+                    // اینجا می‌تونی HTMX modal باز کنی
+                },
+                eventClick: function (info) {
+                    alert('رویدادی که کلیک شد: ' + info.event.title);
+                    // اینجا هم می‌تونی modal ویرایش باز کنی
+                }
+            });
+            calendar.render();
+        });
+    </script>
 </div>
 </div>
 </div>

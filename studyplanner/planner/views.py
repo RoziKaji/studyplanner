@@ -1,9 +1,10 @@
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404, redirect
 from planner.models import subject, studysession
-from .forms import SubjectForm,SessionForm
+from .forms import SubjectForm
 from django.urls import reverse
-
+from django.http import JsonResponse
+from datetime import datetime
 
 def subject_list(request):
     subjects = subject.objects.all()
@@ -95,6 +96,32 @@ def edit_session(request):
         return redirect("planner:subject_list")  # یا هر صفحه‌ای که می‌خوای بعدش بره
 
     return redirect("planner:subject_list")
+
+
+def events_api(request):
+    sessions = studysession.objects.all()
+    
+    events = []
+    for s in sessions:
+        # ترکیب تاریخ و زمان
+        start_dt = datetime.combine(s.date, s.start_time)
+        end_dt = datetime.combine(s.date, s.end_time)
+
+        events.append({
+            "id": s.id,
+            "title": f"{s.title} ({s.subject.name})",
+            "start": start_dt.isoformat(),
+            "end": end_dt.isoformat(),
+            "color": s.subject.color,  # رنگ موضوع برای رنگ‌بندی event
+            "extendedProps": {
+                "note": s.note or "",
+                "subject": s.subject.name,
+                "subject_id": s.subject.id,
+            }
+        })
+
+    return JsonResponse(events, safe=False)
+
 
 
 def test(request):

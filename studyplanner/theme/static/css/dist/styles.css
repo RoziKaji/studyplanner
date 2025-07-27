@@ -1697,6 +1697,9 @@
   .min-h-80 {
     min-height: calc(var(--spacing) * 80);
   }
+  .min-h-\[500px\] {
+    min-height: 500px;
+  }
   .min-h-full {
     min-height: 100%;
   }
@@ -1756,6 +1759,9 @@
   }
   .gap-4 {
     gap: calc(var(--spacing) * 4);
+  }
+  .overflow-x-auto {
+    overflow-x: auto;
   }
   .overflow-y-auto {
     overflow-y: auto;
