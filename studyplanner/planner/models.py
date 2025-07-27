@@ -21,6 +21,7 @@ class subject(models.Model):
     
 class studysession(models.Model):
     subject = models.ForeignKey(subject, on_delete=models.CASCADE)
+    title = models.CharField(max_length=100)
     date = models.DateField()
     start_time = models.TimeField()
     end_time = models.TimeField()

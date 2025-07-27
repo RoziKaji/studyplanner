@@ -1,14 +1,16 @@
-from .views import *
 from django.urls import path
-from .views import subject_list, test, subject_edit
 from . import views
 
 app_name = "planner"
 
 urlpatterns = [
-    path('index/', view=subject_list, name='subject_list'),
-    path('test/', test),
-    path('subjects/<int:subjecs_id>/edit/', subject_edit, name='subject_edit'),
-    path('delete/<int:pk>/', views.delete_subject, name='delete_subject'),
+    path('index/', views.subject_list, name='index'),
+    path('test/', views.test),
+    path('subjects/edit/', views.subject_edit, name='subject_edit'),
+    path('delete/', views.delete_subject, name='delete_subject'),
     path('subject/add/', views.subject_create, name='subject_add'),
+    path("sessions/", views.subject_list, name="subject_list"),
+    path('add/', views.add_studysession, name='add_studysession'),
+    path('delete-session/', views.delete_session, name='delete_session'),
+    path('edit-session/', views.edit_session, name='edit_session'),
 ]
