@@ -781,9 +781,6 @@
     --btn-fg: var(--color-primary-content);
     isolation: isolate;
   }
-  .visible {
-    visibility: visible;
-  }
   .list {
     display: flex;
     flex-direction: column;
@@ -1306,9 +1303,6 @@
   .absolute {
     position: absolute;
   }
-  .relative {
-    position: relative;
-  }
   .static {
     position: static;
   }
@@ -1665,9 +1659,6 @@
   .flex {
     display: flex;
   }
-  .grid {
-    display: grid;
-  }
   .hidden {
     display: none;
   }
@@ -1742,9 +1733,6 @@
   .grow {
     flex-grow: 1;
   }
-  .grid-cols-2 {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
   .flex-col {
     flex-direction: column;
   }
@@ -1793,10 +1781,6 @@
   }
   .rounded-xl {
     border-radius: var(--radius-xl);
-  }
-  .border {
-    border-style: var(--tw-border-style);
-    border-width: 1px;
   }
   .border-2 {
     border-style: var(--tw-border-style);
