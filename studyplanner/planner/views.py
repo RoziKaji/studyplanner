@@ -5,10 +5,13 @@ from .forms import SubjectForm
 from django.urls import reverse
 from django.http import JsonResponse
 from datetime import datetime
+from django.views.decorators.csrf import csrf_exempt
+import json
+from django.utils.dateparse import parse_datetime
 
 def subject_list(request):
     subjects = subject.objects.all()
-    sessions = studysession.objects.select_related('subject').order_by('-date')
+    sessions = studysession.objects.select_related('subject').order_by('-start_session')
     return render(request, 'index.html', {'subjects': subjects, 'sessions': sessions})
 
 def subject_create(request):
@@ -26,8 +29,8 @@ def subject_edit(request):
         item = get_object_or_404(subject, id=subject_id)
         form = SubjectForm(request.POST, instance=item)
         if form.is_valid():
-            form.save()
-            return HttpResponse('<script>location.reload()</script>')
+             form.save()
+             return HttpResponse('<script>location.reload()</script>')
     return redirect('planner:index')
 
 
@@ -43,18 +46,16 @@ def add_studysession(request):
     if request.method == "POST":
         subject_id = request.POST.get("subject")
         title = request.POST.get("title")
-        date = request.POST.get("date")
-        start = request.POST.get("start_time")
-        end = request.POST.get("end_time")
+        start = request.POST.get("start_session")
+        end = request.POST.get("end_session")
         note = request.POST.get("note")
 
         subj = subject.objects.get(id=subject_id)
         studysession.objects.create(
             subject=subj,
             title=title,
-            date=date,
-            start_time=start,
-            end_time=end,
+            start_session=start,
+            end_session=end,
             note=note
         )
     return HttpResponseRedirect(reverse('planner:index'))
@@ -67,24 +68,14 @@ def delete_session(request):
     return HttpResponseRedirect(reverse('planner:index'))
 
 def edit_session(request):
-    # if request.method == 'POST':
-    #     session_id = request.POST.get('session_id')
-    #     item = get_object_or_404(studysession, id=session_id)
-    #     form = SessionForm(request.POST, instance=item)
-    #     if form.is_valid():
-    #         form.save()
-    #         return HttpResponse('<script>location.reload()</script>')
-    # return redirect('planner:index')
-
     if request.method == "POST":
         session_id = request.POST.get("id")
         session = get_object_or_404(studysession, id=session_id)
 
         # سپس فیلدها رو آپدیت کن
         session.title = request.POST.get("title")
-        session.date = request.POST.get("date")
-        session.start_time = request.POST.get("start_time")
-        session.end_time = request.POST.get("end_time")
+        session.start_session = request.POST.get("start_session")
+        session.end_session = request.POST.get("end_session")
         session.note = request.POST.get("note")
         
         # subject
@@ -103,26 +94,43 @@ def events_api(request):
     
     events = []
     for s in sessions:
-        # ترکیب تاریخ و زمان
-        start_dt = datetime.combine(s.date, s.start_time)
-        end_dt = datetime.combine(s.date, s.end_time)
 
         events.append({
             "id": s.id,
             "title": f"{s.title} ({s.subject.name})",
-            "start": start_dt.isoformat(),
-            "end": end_dt.isoformat(),
-            "color": s.subject.color,  # رنگ موضوع برای رنگ‌بندی event
+            "start": s.start_session.isoformat(),
+            "end": s.end_session.isoformat(),
+            "backgroundColor": s.subject.color,
+            "borderColor": s.subject.color,
+            "textColor": "#000000",
+            "allDay": False,
             "extendedProps": {
                 "note": s.note or "",
                 "subject": s.subject.name,
                 "subject_id": s.subject.id,
             }
         })
-
     return JsonResponse(events, safe=False)
 
 
+@csrf_exempt
+def update_session_date(request):
+    if request.method == "POST":
+        data = json.loads(request.body)
+        session_id = data.get("id")
+        start = parse_datetime(data.get("start"))
+        end = parse_datetime(data.get("end"))
+
+        try:
+            session = studysession.objects.get(id=session_id)
+            session.start_session = start
+            session.end_session = end if end else start
+            session.save()
+            return JsonResponse({"status": "ok"})
+        except studysession.DoesNotExist:
+            return JsonResponse({"error": "Not found"}, status=404)
+
+    return JsonResponse({"error": "Invalid method"}, status=400)
 
 def test(request):
     return render(request, "test.html")

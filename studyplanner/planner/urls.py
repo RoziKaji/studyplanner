@@ -14,4 +14,6 @@ urlpatterns = [
     path('delete-session/', views.delete_session, name='delete_session'),
     path('edit-session/', views.edit_session, name='edit_session'),
     path('api/events/', views.events_api, name='events_api'),
+    path("api/update-session-date/", views.update_session_date, name="update_session_date"),
+
 ]

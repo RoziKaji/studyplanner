@@ -4,19 +4,23 @@
 <div class="flex w-full flex-col lg:flex-row drawer">
     <input id="my-drawer-2" type="checkbox" class="drawer-toggle" />
 
-    <div class="drawer-side ">
+    <div class="drawer-side">
         <label for="my-drawer-2" aria-label="close sidebar" class="drawer-overlay"></label>
-        <button id="add-subject-button" class="btn btn-ghost btn-xs"
-            style="position: fixed; top: 12px; right: 12px; z-index: 50;" hx-get="{% url 'planner:subject_add' %}"
-            hx-target="#add-subject-modal-body" hx-trigger="click" onclick="add_subject_modal.showModal()">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 stroke-current" fill="none" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
-            </svg>
-        </button>
+
 
         {% if subjects %}
 
-        <ul class="menu bg-base-200 text-base-content min-h-full w-80 pt-12">
+        <ul class="menu bg-base-200 text-base-content min-h-full w-80 pt-3">
+            <li class="flex z-100 justify-end">
+                <button id="add-subject-button" class="btn m-4 btn-xs btn-dash" style=" z-index:9999;"
+                    hx-get="{% url 'planner:subject_add' %}" hx-target="#add-subject-modal-body" hx-trigger="click"
+                    onclick="add_subject_modal.showModal()">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 stroke-current" fill="none"
+                        viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                    </svg>
+                </button>
+            </li>
             {% for subject in subjects %}
             <li onmouseover="this.style.backgroundColor='{{ subject.color }}'"
                 onmouseout="this.style.backgroundColor=''" style="transition: background-color 0.2s;">
@@ -27,7 +31,7 @@
                     <div><button hx-get="{% url 'planner:subject_edit'%}" hx-target="#edit-subject-modal-body"
                             hx-trigger="click" onclick="
                             document.getElementById('edit-subject-id').value = '{{ subject.id }}';
-                            document.getElementById('edit-subject-title').value = '{{ subject.name }}';
+                            document.getElementById('edit-subject-name').value = '{{ subject.name }}';
                             document.getElementById('edit-subject-color').value = '{{ subject.color }}';
                             edit_subject_modal.showModal();" class="btn btn-ghost btn-xs">
                             <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="15" height="15"
@@ -43,7 +47,7 @@
                         <!-- btn delete_subject -->
                         <button hx-get="{% url 'planner:delete_subject' %}" hx-target="#delete-subject-modal-body"
                             hx-trigger="click" onclick="document.getElementById('delete-subject-id').value = '{{ subject.id }}'; 
-                            document.getElementById('delete-subject-message').textContent = 'آیا مطمئنی می‌خوای درس «{{ subject.name }}» رو حذف کنی؟'; 
+                            document.getElementById('delete-subject-message').textContent = 'Are you sure you want to delete «{{ subject.name }}» ?'; 
                             delete_subject_modal.showModal();" class="btn btn-ghost btn-xs">
                             <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="18" height="18"
                                 viewBox="0 0 64 64">
@@ -62,20 +66,20 @@
             <!-- dialog edit_subject -->
             <dialog id="edit_subject_modal" class="modal">
                 <div class="modal-box">
-                    <h3 class="font-bold text-lg mb-4">ویرایش درس</h3>
+                    <h3 class="font-bold text-lg mb-4">Edit Subject</h3>
                     <form method="POST" action="{% url 'planner:subject_edit' %}">
                         {% csrf_token %}
                         <input type="hidden" name="subject_id" id="edit-subject-id">
                         <div>
-                            <label class="label">نام درس</label>
+                            <label class="label">Name</label>
                         </div>
                         <div class="form-control mt-2">
-                            <input type="text" name="title" id="edit-subject-title"
-                                class="input input-bordered input-sm" required>
+                            <input type="text" name="name" id="edit-subject-name" class="input input-bordered input-sm"
+                                required>
                         </div>
                         <div class="mt-2">
                             <div>
-                                <label class="label">رنگ</label>
+                                <label class="label">Color</label>
 
                             </div>
                             <div class="form-control mt-2">
@@ -91,11 +95,11 @@
                                 </select>
                             </div>
                         </div>
-                        <div class="modal-action">
-                            <button type="submit" class="btn btn-sm btn-primary">ذخیره</button>
+                        <div class="modal-action justify-start" dir="rtl">
+                            <button type="submit" class="btn btn-sm btn-primary">Save</button>
                     </form>
                     <form method="dialog">
-                        <button class="btn btn-sm">بستن</button>
+                        <button class="btn btn-sm">Close</button>
                     </form>
                 </div>
     </div>
@@ -109,18 +113,18 @@
     <!-- dialog delete_subject -->
     <dialog id="delete_subject_modal" class="modal">
         <div class="modal-box">
-            <h3 class="font-bold text-lg mb-4">حذف درس</h3>
+            <h3 class="font-bold text-lg mb-4">Delete Subject</h3>
             <form method="POST" action="{% url 'planner:delete_subject' %}" class="flex flex-col gap-3"
                 id="delete-subject-form">
                 {% csrf_token %}
                 <input type="hidden" name="subject_id" id="delete-subject-id" />
                 <p class="text-right" id="delete-subject-message">ایا مطمعنید میخواید این درس رو حذف کنید؟</p>
-                <div class="modal-action">
-                    <button type="submit" class="btn btn-error btn-sm">حذف</button>
+                <div class="modal-action justify-start" dir="rtl">
+                    <button type="submit" class="btn btn-error btn-sm">Delte</button>
             </form>
 
             <form method="dialog">
-                <button class="btn btn-sm">بستن</button>
+                <button class="btn btn-sm">Close</button>
             </form>
         </div>
 </div>
@@ -136,29 +140,29 @@
 <!-- dialog add_subject -->
 <dialog id="add_subject_modal" class="modal">
     <div class="modal-box">
-        <h3 class="font-bold text-lg mb-4">افزودن درس جدید</h3>
+        <h3 class="font-bold text-lg mb-4">Add Subject</h3>
         <form method="POST" action="{% url 'planner:subject_add' %}" class="flex flex-col gap-3">
             {% csrf_token %}
 
-            <input type="text" name="name" placeholder="نام درس" class="input input-bordered w-full" required />
+            <input type="text" name="name" placeholder="Name" class="input input-bordered w-full" required />
 
             <select name="color" class="select select-bordered w-full" required>
-                <option disabled selected>انتخاب رنگ</option>
-                <option value="#FFADAD">گلبهی</option>
-                <option value="#FFD6A5">هلویی</option>
-                <option value="#FDFFB6">نباتی</option>
-                <option value="#CAFFBF">نعنایی</option>
-                <option value="#9BF6FF">آبی برفی</option>
-                <option value="#A0C4FF">نیلی</option>
-                <option value="#BDB2FF">یاسی</option>
-                <option value="#FFC6FF">صورتی شفقی</option>
+                <option disabled selected>Color</option>
+                <option value="#FFADAD">Melon</option>
+                <option value="#FFD6A5">Sunset</option>
+                <option value="#FDFFB6">Cream</option>
+                <option value="#CAFFBF">Tea green</option>
+                <option value="#9BF6FF">Electric blue</option>
+                <option value="#A0C4FF">Jordy Blue</option>
+                <option value="#BDB2FF">Periwinkle</option>
+                <option value="#FFC6FF">Mauve</option>
             </select>
 
-            <div class="modal-action">
-                <button type="submit" class="btn btn-primary btn-sm">ذخیره</button>
+            <div class="modal-action justify-start" dir="rtl">
+                <button type="submit" class="btn btn-primary btn-sm">Save</button>
         </form>
         <form method="dialog">
-            <button class="btn btn-sm">بستن</button>
+            <button class="btn btn-sm">Close</button>
         </form>
     </div>
 </dialog>
@@ -190,9 +194,9 @@
 
 
 
-    <!-- div and button add_session -->
-    <div class="menu bg-base-200 text-base-content min-h-80 h-full w-80 pt-8 overflow-y-auto rounded-box gap-2">
-        <button id="add-session-button" class="btn btn-ghost btn-xs absolute top-5 right-5"
+    <!-- button add_session -->
+    <div class="menu bg-base-200 text-base-content min-h-80 h-full w-80 pt-3 overflow-y-auto rounded-box gap-2">
+        <button id="add-session-button" class="btn btn-dash btn-xs top-8 right-5"
             hx-get="{% url 'planner:add_studysession' %}" hx-target="#add-session-modal-body" hx-trigger="click"
             onclick="add_session_modal.showModal()">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 stroke-current" fill="none" viewBox="0 0 24 24">
@@ -202,12 +206,12 @@
 
         {% for session in sessions %}
         <div class="rounded-xl p-2 text-black shadow" style="background-color: {{ session.subject.color }};">
-         <!-- let Tarane figure it out, don't touch.!!!!!! onmouseover="getElementById('{{session.id}}+buttons').classList.remove('hidden');"> -->
+            <!-- let Tarane figure it out, don't touch.!!!!!! onmouseover="getElementById('{{session.id}}+buttons').classList.remove('hidden');"> -->
             <div class="font-bold text-base">{{ session.subject.name }}</div>
             <div class="text-sm">{{ session.title }}</div>
-            <div class="text-xs">{{ session.start_time|time:"H:i" }} - {{ session.end_time|time:"H:i" }}</div>
+            <div class="text-xs">{{ session.start_session|time:"H:i" }} - {{ session.end_session|time:"H:i" }}</div>
             <div class="flex justify-end">
-                 <!-- dast nazar lotfan. male taranst hidden" id="{{ session.id }} + 'buttons'"> -->
+                <!-- dast nazar lotfan. male taranst hidden" id="{{ session.id }} + 'buttons'"> -->
 
                 <!--btn edit_session-->
                 <button hx-get="{% url 'planner:edit_session'%}" hx-target="#edit-session-modal-body" hx-trigger="click"
@@ -215,11 +219,9 @@
                             document.getElementById('edit-session-id').value = '{{ session.id }}';
                             document.getElementById('edit-session-subject').value = '{{ session.subject.id }}';
                             document.getElementById('edit-session-title').value = '{{ session.title }}';
-                            document.getElementById('edit-session-date').value = '{{ session.date|date:'Y-m-d' }}';
-                            document.getElementById('edit-session-start_time').value = '{{ session.start_time|time:'H:i' }}';
-                            document.getElementById('edit-session-end_time').value = '{{ session.end_time|time:'H:i' }}';
-                            document.getElementById('edit-session-note').value = `{{ session.note|default_if_none:'' }}`;
-        
+                            document.getElementById('edit-session-start_session').value = '{{ session.start_session|date:"Y-m-d\\TH:i" }}';
+                            document.getElementById('edit-session-end_session').value = '{{ session.end_session|date:"Y-m-d\\TH:i" }}';
+                            document.getElementById('edit-session-note').value = '{{ session.note|default_if_none:"" }}';
                             edit_session_modal.showModal();" class="btn btn-ghost btn-xs">
                     <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="15" height="15" viewBox="0 0 24 24">
                         <path
@@ -230,8 +232,8 @@
 
                 <!--btn delete_session-->
                 <button hx-get="{% url 'planner:delete_session' %}" hx-target="#delete-session-modal-body"
-                    hx-trigger="click" onclick="document.getElementById('delete-session-id').value = '{{ session.id }}';
-                            document.getElementById('delete-session-message').textContent = 'مطمعنی میخوای برنامه «{{ session.title }}» رو از درس «{{ session.subject.name }}» حذف کنی؟'
+                    hx-trigger="click" onclick="document.getElementById('delete-session-id').value = '{{ session.id }}'; 
+                            document.getElementById('delete-session-message').textContent = 'Are you sure you want to delete «{{ session.title }}» from «{{ session.subject.name }}» ?'
                             delete_session_modal.showModal();" class="btn btn-ghost btn-xs">
                     <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="18" height="18" viewBox="0 0 64 64">
                         <path
@@ -250,35 +252,34 @@
     <!-- dilog edit_session -->
     <dialog id="edit_session_modal" class="modal">
         <div class="modal-box">
-            <h3 class="font-bold text-lg mb-4">ویرایش برنامه مطالعه</h3>
+            <h3 class="font-bold text-lg mb-4">Edit Studysession</h3>
             <form method="POST" action="{% url 'planner:edit_session' %}" class="flex flex-col gap-3">
                 {% csrf_token %}
 
                 <input type="hidden" name="id" id="edit-session-id">
 
                 <select name="subject" id="edit-session-subject" class="select select-bordered w-full" required>
-                    <option disabled>انتخاب درس</option>
+                    <option disabled>Subject</option>
                     {% for subj in subjects %}
                     <option value="{{ subj.id }}">{{ subj.name }}</option>
                     {% endfor %}
                 </select>
 
 
-                <input type="text" name="title" id="edit-session-title" placeholder="عنوان"
+                <input type="text" name="title" id="edit-session-title" placeholder="Title"
                     class="input input-bordered w-full" required />
-                <input type="date" name="date" id="edit-session-date" class="input input-bordered w-full" required />
-                <input type="time" name="start_time" id="edit-session-start_time" class="input input-bordered w-full"
+                <input type="datetime-local" name="start_session" id="edit-session-start_session" class="input input-bordered w-full"
                     required />
-                <input type="time" name="end_time" id="edit-session-end_time" class="input input-bordered w-full"
+                <input type="datetime-local" name="end_session" id="edit-session-end_session" class="input input-bordered w-full"
                     required />
                 <textarea name="note" id="edit-session-note" class="textarea textarea-bordered"
-                    placeholder="یادداشت (اختیاری)"></textarea>
+                    placeholder="Note (optional)"></textarea>
 
-                <div class="modal-action">
-                    <button type="submit" class="btn btn-primary btn-sm">ذخیره</button>
+                <div class="modal-action justify-start" dir="rtl">
+                    <button type="submit" class="btn btn-primary btn-sm">Save</button>
             </form>
             <form method="dialog">
-                <button class="btn btn-sm">بستن</button>
+                <button class="btn btn-sm">Close</button>
             </form>
         </div>
     </dialog>
@@ -289,17 +290,17 @@
     <!-- dialog delete_session -->
     <dialog id="delete_session_modal" class="modal">
         <div class="modal-box">
-            <h3 class="font-bold text-lg mb-4">حذف برنامه درسی</h3>
+            <h3 class="font-bold text-lg mb-4">Delete Studysession</h3>
             <form method="POST" action="{% url 'planner:delete_session' %}" class="flex flex-col gap-3"
                 id="delete-session-form">
                 {% csrf_token %}
                 <input type="hidden" name="session_id" id="delete-session-id" />
-                <p class="text-right" id="delete-session-message">ایا مطمعنید میخواید این برنامه رو حذف کنید؟</p>
-                <div class="modal-action">
-                    <button type="submit" class="btn btn-error btn-sm">حذف</button>
+                <p class="text-right" id="delete-session-message">ایا مطمعنید میخواید این درس رو حذف کنید؟</p>
+                <div class="modal-action justify-start" dir="rtl">
+                    <button type="submit" class="btn btn-error btn-sm">Delete</button>
             </form>
             <form method="dialog">
-                <button class="btn btn-sm">بستن</button>
+                <button class="btn btn-sm">Close</button>
             </form>
         </div>
 </div>
@@ -310,29 +311,27 @@
 <!-- dilog add_session -->
 <dialog id="add_session_modal" class="modal">
     <div class="modal-box">
-        <h3 class="font-bold text-lg mb-4">افزودن برنامه مطالعه</h3>
+        <h3 class="font-bold text-lg mb-4">Add Studysession</h3>
         <form method="POST" action="{% url 'planner:add_studysession' %}" class="flex flex-col gap-3">
             {% csrf_token %}
 
             <select name="subject" class="select select-bordered w-full" required>
-                <option disabled selected>انتخاب درس</option>
+                <option disabled selected>Choose Subject</option>
                 {% for subj in subjects %}
                 <option value="{{ subj.id }}">{{ subj.name }}</option>
                 {% endfor %}
             </select>
 
-            <input type="text" name="title" placeholder="عنوان" class="input input-bordered w-full" required />
-            <input type="date" name="date" class="input input-bordered w-full" required />
-            <input type="time" name="start_time" class="input input-bordered w-full" required />
-            <input type="time" name="end_time" class="input input-bordered w-full" required />
-            <textarea name="note" class="textarea textarea-bordered" placeholder="یادداشت (اختیاری)"></textarea>
+            <input type="text" name="title" placeholder="Title" class="input input-bordered w-full" required />
+            <input type="datetime-local" name="start_session" class="input input-bordered w-full" required />
+            <input type="datetime-local" name="end_session" class="input input-bordered w-full" required />
+            <textarea name="note" class="textarea textarea-bordered" placeholder="Note (optional)"></textarea>
 
-            <div class="modal-action">
-                <button type="submit" class="btn btn-primary btn-sm">ذخیره</button>
-
+            <div class="modal-action flex justify-start" dir="rtl">
+                <button type="submit" class="btn btn-primary btn-sm">Save</button>
         </form>
         <form method="dialog">
-            <button class="btn btn-sm">بستن</button>
+            <button class="btn btn-sm">Close</button>
         </form>
     </div>
 
@@ -342,31 +341,85 @@
 
 
 
-<div class="card bg-base-300 border-2 border-slate-500 rounded-box w-full h-full">
+<div class="card bg-base-300 rounded-box w-full h-full">
     <div class="p-4">
         <div id="calendar" class="bg-base-100 p-2 rounded-xl shadow min-h-[500px] overflow-x-auto"></div>
     </div>
     <script>
+
+        function updateEventOnServer(event, revertFunc) {
+            console.log(event)
+            fetch('/planner/api/update-session-date/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    // 'X-CSRFToken': getCookie('csrftoken')
+                },
+                body: JSON.stringify({
+                    id: event.id,
+                    start: event.start.toISOString(),
+                    end: event.end ? event.end.toISOString() : null
+                })
+            })
+                .then(response => {
+                    if (!response.ok) throw new Error();
+                    calendar.refetchEvents();
+                })
+                .catch(error => {
+                    alert("ذخیره‌سازی انجام نشد!");
+                    revertFunc();  // برمی‌گردونه به جای قبلی
+                });
+        }
+
+        let calendar;  // قابل دسترسی تو همه توابع
+
+
         document.addEventListener('DOMContentLoaded', function () {
             const calendarEl = document.getElementById('calendar');
-            const calendar = new FullCalendar.Calendar(calendarEl, {
+            calendar = new FullCalendar.Calendar(calendarEl, {
                 initialView: 'dayGridMonth',
+                editable: true,  // فعال‌سازی drag & drop و resize
+                eventDurationEditable: true,  // اجازه تغییر طول زمان
+                selectable: true,
                 height: 'auto',
                 headerToolbar: {
                     left: 'prev,next today',
                     center: 'title',
                     right: 'timeGridDay,timeGridWeek,dayGridMonth'
                 },
-                events: '/planner/api/events/',  // این endpoint رو در مرحله بعد می‌سازیم
+
+                events: '/planner/api/events/',
+
+                eventDrop: function (info) {
+                    updateEventOnServer(info.event, info.revert);
+                },
+
+                eventResize: function (info) {
+                    updateEventOnServer(info.event, info.revert);
+                },
+
+
+                eventDidMount: function (info) {
+                    info.el.style.backgroundColor = info.event.backgroundColor;
+                    info.el.style.borderColor = info.event.borderColor;
+                    info.el.style.color = "#000";  // مطمئن شو متن دیده می‌شه
+                    info.el.style.borderRadius = "6px";
+                    info.el.style.padding = "2px";
+                },
                 dateClick: function (info) {
                     alert('روزی که کلیک شد: ' + info.dateStr);
                     // اینجا می‌تونی HTMX modal باز کنی
                 },
                 eventClick: function (info) {
-                    alert('رویدادی که کلیک شد: ' + info.event.title);
-                    // اینجا هم می‌تونی modal ویرایش باز کنی
+                    const note = info.event.extendedProps.note;
+                    const subject = info.event.extendedProps.subject;
+                    const start = info.event.start.toLocaleTimeString();
+                    const end = info.event.end.toLocaleTimeString();
+
+                    alert(`موضوع: ${subject}\nیادداشت: ${note}\nساعت: ${start} تا ${end}`);
                 }
             });
+
             calendar.render();
         });
     </script>

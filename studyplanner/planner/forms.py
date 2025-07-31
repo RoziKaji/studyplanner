@@ -9,4 +9,4 @@ class SubjectForm(forms.ModelForm):
 class SessionForm(forms.ModelForm):
     class Meta:
         model = studysession
-        fields=['subject', 'title', 'date', 'start_time', 'end_time', 'note']
+        fields=['subject', 'title', 'start_session', 'end_session', 'note']
