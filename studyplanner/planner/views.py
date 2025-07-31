@@ -5,6 +5,7 @@ from .forms import SubjectForm
 from django.urls import reverse
 from django.http import JsonResponse
 from datetime import datetime
+from django.utils import timezone
 from django.views.decorators.csrf import csrf_exempt
 import json
 from django.utils.dateparse import parse_datetime
@@ -120,7 +121,11 @@ def update_session_date(request):
         session_id = data.get("id")
         start = parse_datetime(data.get("start"))
         end = parse_datetime(data.get("end"))
+    if start and timezone.is_aware(start):
+        start = timezone.make_naive(start)
 
+    if end and timezone.is_aware(end):
+        end = timezone.make_naive(end)
         try:
             session = studysession.objects.get(id=session_id)
             session.start_session = start

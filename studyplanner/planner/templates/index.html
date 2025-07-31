@@ -366,7 +366,7 @@
                     calendar.refetchEvents();
                 })
                 .catch(error => {
-                    alert("ذخیره‌سازی انجام نشد!");
+                    alert("Faild to save!");
                     revertFunc();  // برمی‌گردونه به جای قبلی
                 });
         }
@@ -407,7 +407,7 @@
                     info.el.style.padding = "2px";
                 },
                 dateClick: function (info) {
-                    alert('روزی که کلیک شد: ' + info.dateStr);
+                    alert('The day you click is: ' + info.dateStr);
                     // اینجا می‌تونی HTMX modal باز کنی
                 },
                 eventClick: function (info) {
@@ -416,7 +416,7 @@
                     const start = info.event.start.toLocaleTimeString();
                     const end = info.event.end.toLocaleTimeString();
 
-                    alert(`موضوع: ${subject}\nیادداشت: ${note}\nساعت: ${start} تا ${end}`);
+                    alert(`Title: ${subject}\nNote: ${note}\nTime: ${start} to ${end}`);
                 }
             });
 
