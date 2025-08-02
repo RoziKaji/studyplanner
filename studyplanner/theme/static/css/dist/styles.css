@@ -1968,9 +1968,24 @@
     --btn-color: var(--color-primary);
     --btn-fg: var(--color-primary-content);
   }
+  @media (width >= 48rem) {
+    .md\:w-full {
+      width: 100%;
+    }
+  }
   @media (width >= 64rem) {
     .lg\:hidden {
       display: none;
+    }
+  }
+  @media (width >= 64rem) {
+    .lg\:w-80 {
+      width: calc(var(--spacing) * 80);
+    }
+  }
+  @media (width >= 64rem) {
+    .lg\:w-full {
+      width: 100%;
     }
   }
   @media (width >= 64rem) {

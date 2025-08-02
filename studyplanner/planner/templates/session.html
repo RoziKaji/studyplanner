@@ -1,0 +1,140 @@
+<div class="menu bg-base-200 text-base-content min-h-80 h-full w-80 pt-3 overflow-y-auto rounded-box gap-2">
+    <button id="add-session-button" class="btn btn-dash btn-xs top-8 right-5"
+        hx-get="{% url 'planner:add_studysession' %}" hx-target="#add-session-modal-body" hx-trigger="click"
+        onclick="add_session_modal.showModal()">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 stroke-current" fill="none" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+        </svg>
+    </button>
+    {% for session in sessions %}
+    <div class="rounded-xl p-2 text-black shadow" style="background-color: {{ session.subject.color }};">
+        <!-- let Tarane figure it out, don't touch.!!!!!! onmouseover="getElementById('{{session.id}}+buttons').classList.remove('hidden');"> -->
+        <div class="font-bold text-base">{{ session.subject.name }}</div>
+        <div class="text-sm">{{ session.title }}</div>
+        <div class="text-xs">{{ session.start_session|time:"H:i" }} - {{ session.end_session|time:"H:i" }}</div>
+        <div class="flex justify-end">
+            <!-- dast nazar lotfan. male taranst hidden" id="{{ session.id }} + 'buttons'"> -->
+
+            <!--btn edit_session-->
+            <button hx-target="#edit-session-modal-body" hx-trigger="click"
+                onclick="
+                            document.getElementById('edit-session-id').value = '{{ session.id }}';
+                            document.getElementById('edit-session-subject').value = '{{ session.subject.id }}';
+                            document.getElementById('edit-session-title').value = '{{ session.title }}';
+                            document.getElementById('edit-session-start_session').value = '{{ session.start_session|date:"Y-m-d\\TH:i" }}';
+                            document.getElementById('edit-session-end_session').value='{{ session.end_session|date:"Y-m-d\\TH:i" }}'
+                            ; document.getElementById('edit-session-note').value='{{ session.note|default_if_none:"" }}' ;
+                            edit_session_modal.showModal();" 
+                class="btn btn-ghost btn-xs">
+                <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="15" height="15" viewBox="0 0 24 24">
+                    <path
+                        d="M 19.171875 2 C 18.448125 2 17.724375 2.275625 17.171875 2.828125 L 16 4 L 20 8 L 21.171875 6.828125 C 22.275875 5.724125 22.275875 3.933125 21.171875 2.828125 C 20.619375 2.275625 19.895625 2 19.171875 2 z M 14.5 5.5 L 3 17 L 3 21 L 7 21 L 18.5 9.5 L 14.5 5.5 z">
+                    </path>
+                </svg>
+            </button>
+
+            <!--btn delete_session-->
+            <button hx-get="{% url 'planner:delete_session' %}" hx-target="#delete-session-modal-body"
+                hx-trigger="click" onclick="document.getElementById('delete-session-id').value = '{{ session.id }}'; 
+                            document.getElementById('delete-session-message').textContent = 'Are you sure you want to delete «{{ session.title }}» from «{{ session.subject.name }}» ?'
+                            delete_session_modal.showModal();" class="btn btn-ghost btn-xs">
+                <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="18" height="18" viewBox="0 0 64 64">
+                    <path
+                        d="M 28 7 C 25.243 7 23 9.243 23 12 L 23 15 L 13 15 C 11.896 15 11 15.896 11 17 C 11 18.104 11.896 19 13 19 L 15.109375 19 L 16.792969 49.332031 C 16.970969 52.510031 19.600203 55 22.783203 55 L 41.216797 55 C 44.398797 55 47.029031 52.510031 47.207031 49.332031 L 48.890625 19 L 51 19 C 52.104 19 53 18.104 53 17 C 53 15.896 52.104 15 51 15 L 41 15 L 41 12 C 41 9.243 38.757 7 36 7 L 28 7 z M 28 11 L 36 11 C 36.552 11 37 11.449 37 12 L 37 15 L 27 15 L 27 12 C 27 11.449 27.448 11 28 11 z M 19.113281 19 L 44.886719 19 L 43.212891 49.109375 C 43.153891 50.169375 42.277797 51 41.216797 51 L 22.783203 51 C 21.723203 51 20.846109 50.170328 20.787109 49.111328 L 19.113281 19 z M 32 23.25 C 31.033 23.25 30.25 24.034 30.25 25 L 30.25 45 C 30.25 45.966 31.033 46.75 32 46.75 C 32.967 46.75 33.75 45.966 33.75 45 L 33.75 25 C 33.75 24.034 32.967 23.25 32 23.25 z M 24.642578 23.251953 C 23.677578 23.285953 22.922078 24.094547 22.955078 25.060547 L 23.652344 45.146484 C 23.685344 46.091484 24.462391 46.835938 25.400391 46.835938 C 25.421391 46.835938 25.441891 46.835938 25.462891 46.835938 C 26.427891 46.801938 27.183391 45.991391 27.150391 45.025391 L 26.453125 24.939453 C 26.419125 23.974453 25.606578 23.228953 24.642578 23.251953 z M 39.355469 23.251953 C 38.388469 23.224953 37.580875 23.974453 37.546875 24.939453 L 36.849609 45.025391 C 36.815609 45.991391 37.571109 46.801938 38.537109 46.835938 C 38.558109 46.836938 38.578609 46.835938 38.599609 46.835938 C 39.537609 46.835938 40.314656 46.091484 40.347656 45.146484 L 41.044922 25.060547 C 41.078922 24.094547 40.321469 23.285953 39.355469 23.251953 z">
+                    </path>
+                </svg>
+            </button>
+        </div>
+    </div>
+    {% empty %}
+    <div class="text-sm text-center text-gray-400 mt-10">هیچ برنامه‌ای هنوز ثبت نشده</div>
+    {% endfor %}
+
+
+    <!-- dilog edit_session -->
+    <dialog id="edit_session_modal" class="modal">
+        <div class="modal-box" id="edit-session-modal-body">
+            <h3 class="font-bold text-lg mb-4">Edit Studysession</h3>
+            <form method="POST" action="{% url 'planner:edit_session' %}" class="flex flex-col gap-3">
+                {% csrf_token %}
+
+                <input type="hidden" name="id" id="edit-session-id">
+
+                <select name="subject" id="edit-session-subject" class="select select-bordered w-full" required>
+                    <option disabled>Subject</option>
+                    {% for subj in subjects %}
+                    <option value="{{ subj.id }}">{{ subj.name }}</option>
+                    {% endfor %}
+                </select>
+
+
+                <input type="text" name="title" id="edit-session-title" placeholder="Title"
+                    class="input input-bordered w-full" required />
+                <input type="datetime-local" name="start_session" id="edit-session-start_session"
+                    class="input input-bordered w-full" required />
+                <input type="datetime-local" name="end_session" id="edit-session-end_session"
+                    class="input input-bordered w-full" required />
+                <textarea name="note" id="edit-session-note" class="textarea textarea-bordered"
+                    placeholder="Note (optional)"></textarea>
+
+                <div class="modal-action justify-start" dir="rtl">
+                    <button type="submit" class="btn btn-primary btn-sm">Save</button>
+            </form>
+            <form method="dialog">
+                <button class="btn btn-sm">Close</button>
+            </form>
+        </div>
+    </dialog>
+
+
+
+
+    <!-- dialog delete_session -->
+    <dialog id="delete_session_modal" class="modal">
+        <div class="modal-box">
+            <h3 class="font-bold text-lg mb-4">Delete Studysession</h3>
+            <form method="POST" action="{% url 'planner:delete_session' %}" class="flex flex-col gap-3"
+                id="delete-session-form">
+                {% csrf_token %}
+                <input type="hidden" name="session_id" id="delete-session-id" />
+                <p class="text-right" id="delete-session-message">ایا مطمعنید میخواید این درس رو حذف کنید؟</p>
+                <div class="modal-action justify-start" dir="rtl">
+                    <button type="submit" class="btn btn-error btn-sm">Delete</button>
+            </form>
+            <form method="dialog">
+                <button class="btn btn-sm">Close</button>
+            </form>
+        </div>
+</div>
+</dialog>
+
+
+
+<!-- dilog add_session -->
+<dialog id="add_session_modal" class="modal">
+    <div class="modal-box">
+        <h3 class="font-bold text-lg mb-4">Add Studysession</h3>
+        <form method="POST" action="{% url 'planner:add_studysession' %}" class="flex flex-col gap-3">
+            {% csrf_token %}
+
+            <select name="subject" class="select select-bordered w-full" required>
+                <option disabled selected>Choose Subject</option>
+                {% for subj in subjects %}
+                <option value="{{ subj.id }}">{{ subj.name }}</option>
+                {% endfor %}
+            </select>
+
+            <input type="text" name="title" placeholder="Title" class="input input-bordered w-full" required />
+            <input type="datetime-local" name="start_session" class="input input-bordered w-full" required />
+            <input type="datetime-local" name="end_session" class="input input-bordered w-full" required />
+            <textarea name="note" class="textarea textarea-bordered" placeholder="Note (optional)"></textarea>
+
+            <div class="modal-action flex justify-start" dir="rtl">
+                <button type="submit" class="btn btn-primary btn-sm">Save</button>
+        </form>
+        <form method="dialog">
+            <button class="btn btn-sm">Close</button>
+        </form>
+    </div>
+</dialog>
+</div>

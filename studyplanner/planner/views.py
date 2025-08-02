@@ -12,8 +12,13 @@ from django.utils.dateparse import parse_datetime
 
 def subject_list(request):
     subjects = subject.objects.all()
+    return render(request, 'index.html', {'subjects': subjects})
+
+
+def session_list(request):
     sessions = studysession.objects.select_related('subject').order_by('-start_session')
-    return render(request, 'index.html', {'subjects': subjects, 'sessions': sessions})
+    subjects = subject.objects.all()
+    return render(request, 'session.html', {'sessions': sessions, 'subjects': subjects})
 
 def subject_create(request):
     if request.method == "POST":
@@ -85,9 +90,7 @@ def edit_session(request):
         
         session.save()
 
-        return redirect("planner:subject_list")  # یا هر صفحه‌ای که می‌خوای بعدش بره
-
-    return redirect("planner:subject_list")
+        return redirect("planner:index")  # یا هر صفحه‌ای که می‌خوای بعدش بره
 
 
 def events_api(request):
@@ -136,6 +139,7 @@ def update_session_date(request):
             return JsonResponse({"error": "Not found"}, status=404)
 
     return JsonResponse({"error": "Invalid method"}, status=400)
+
 
 def test(request):
     return render(request, "test.html")
