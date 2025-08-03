@@ -30,3 +30,6 @@ class studysession(models.Model):
     def __str__(self):
         return str(self.subject)
     
+class reccuring(models.Model):
+    pass
+    

@@ -1,4 +1,4 @@
-<div class="menu bg-base-200 text-base-content min-h-80 h-full w-80 pt-3 overflow-y-auto rounded-box gap-2">
+<div class="bg-base-200 text-base-content w-80 pt-3 rounded-box flex flex-col gap-2 overflow-y-auto max-h-[98vh]">
     <button id="add-session-button" class="btn btn-dash btn-xs top-8 right-5"
         hx-get="{% url 'planner:add_studysession' %}" hx-target="#add-session-modal-body" hx-trigger="click"
         onclick="add_session_modal.showModal()">
@@ -6,6 +6,9 @@
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
         </svg>
     </button>
+        <div class="flex-grow flex flex-col gap-2 overflow-y-auto
+                max-h-[calc(100vh-6rem)]
+                md:max-h-none md:overflow-visible pr-1">
     {% for session in sessions %}
     <div class="rounded-xl p-2 text-black shadow" style="background-color: {{ session.subject.color }};">
         <!-- let Tarane figure it out, don't touch.!!!!!! onmouseover="getElementById('{{session.id}}+buttons').classList.remove('hidden');"> -->

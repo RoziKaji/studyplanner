@@ -1691,6 +1691,9 @@
     width: var(--size);
     height: var(--size);
   }
+  .h-1\/1 {
+    height: calc(1/1 * 100%);
+  }
   .h-4 {
     height: calc(var(--spacing) * 4);
   }
@@ -1703,14 +1706,50 @@
   .h-15 {
     height: calc(var(--spacing) * 15);
   }
+  .h-64 {
+    height: calc(var(--spacing) * 64);
+  }
+  .h-80 {
+    height: calc(var(--spacing) * 80);
+  }
   .h-full {
     height: 100%;
   }
   .h-screen {
     height: 100vh;
   }
+  .max-h-\[80vh\] {
+    max-height: 80vh;
+  }
+  .max-h-\[85vh\] {
+    max-height: 85vh;
+  }
+  .max-h-\[90vh\] {
+    max-height: 90vh;
+  }
+  .max-h-\[95vh\] {
+    max-height: 95vh;
+  }
+  .max-h-\[97vh\] {
+    max-height: 97vh;
+  }
+  .max-h-\[98vh\] {
+    max-height: 98vh;
+  }
+  .max-h-\[100vh\] {
+    max-height: 100vh;
+  }
+  .max-h-\[calc\(100vh-6rem\)\] {
+    max-height: calc(100vh - 6rem);
+  }
+  .min-h-64 {
+    min-height: calc(var(--spacing) * 64);
+  }
   .min-h-80 {
     min-height: calc(var(--spacing) * 80);
+  }
+  .min-h-90 {
+    min-height: calc(var(--spacing) * 90);
   }
   .min-h-\[500px\] {
     min-height: 500px;
@@ -1748,6 +1787,12 @@
   .shrink-0 {
     flex-shrink: 0;
   }
+  .flex-grow {
+    flex-grow: 1;
+  }
+  .grow {
+    flex-grow: 1;
+  }
   .resize {
     resize: both;
   }
@@ -1777,6 +1822,12 @@
   }
   .gap-4 {
     gap: calc(var(--spacing) * 4);
+  }
+  .gap-5 {
+    gap: calc(var(--spacing) * 5);
+  }
+  .overflow-hidden {
+    overflow: hidden;
   }
   .overflow-x-auto {
     overflow-x: auto;
@@ -1855,6 +1906,9 @@
   }
   .pt-3 {
     padding-top: calc(var(--spacing) * 3);
+  }
+  .pr-1 {
+    padding-right: calc(var(--spacing) * 1);
   }
   .text-center {
     text-align: center;
@@ -1969,23 +2023,18 @@
     --btn-fg: var(--color-primary-content);
   }
   @media (width >= 48rem) {
-    .md\:w-full {
-      width: 100%;
+    .md\:max-h-none {
+      max-height: none;
+    }
+  }
+  @media (width >= 48rem) {
+    .md\:overflow-visible {
+      overflow: visible;
     }
   }
   @media (width >= 64rem) {
     .lg\:hidden {
       display: none;
-    }
-  }
-  @media (width >= 64rem) {
-    .lg\:w-80 {
-      width: calc(var(--spacing) * 80);
-    }
-  }
-  @media (width >= 64rem) {
-    .lg\:w-full {
-      width: 100%;
     }
   }
   @media (width >= 64rem) {
