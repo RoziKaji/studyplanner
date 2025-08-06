@@ -193,93 +193,108 @@
 
 
 
-<div id="session-list" hx-get="{% url 'planner:sessions'%}" hx-trigger="refreshSessions from:body" hx-swap="outerHTML">
-</div>
-
-<div class="card bg-base-300 rounded-box w-full h-full">
-    <div class="p-4">
-        <div id="calendar" class="bg-base-100 p-2 rounded-xl shadow min-h-[500px] overflow-x-auto"></div>
+    <div id="session-list" hx-get="{% url 'planner:sessions'%}" hx-trigger="refreshSessions from:body" hx-swap="innerHTML">
     </div>
-    <script>
 
-        function updateEventOnServer(event, revertFunc) {
-            console.log(event)
-            fetch('/planner/api/update-session-date/', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    id: event.id,
-                    start: event.start.toISOString(),
-                    end: event.end ? event.end.toISOString() : null
+    <div class="card bg-base-300 rounded-box w-full h-full">
+        <div class="p-4">
+            <div id="calendar" class="bg-base-100 p-2 rounded-xl shadow min-h-[500px] overflow-x-auto"></div>
+        </div>
+        <script>
+
+            function updateEventOnServer(event, revertFunc) {
+                console.log(event)
+                fetch('/planner/api/update-session-date/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        id: event.id,
+                        start: event.start.toISOString(),
+                        end: event.end ? event.end.toISOString() : null
+                    })
                 })
-            })
-                .then(response => {
-                    if (!response.ok) throw new Error();
-                    calendar.refetchEvents();
-                    document.body.dispatchEvent(new Event("refreshSessions"));
-                })
-                .catch(error => {
-                    alert("Faild to save!");
-                    revertFunc();  // برمی‌گردونه به جای قبلی
+                    .then(response => {
+                        if (!response.ok) throw new Error();
+                        calendar.refetchEvents();
+                        document.body.dispatchEvent(new Event("refreshSessions"));
+                    })
+                    .catch(error => {
+                        alert("Faild to save!");
+                        revertFunc();  // برمی‌گردونه به جای قبلی
+                    });
+            }
+
+            let calendar;  // قابل دسترسی تو همه توابع
+
+
+            document.addEventListener('DOMContentLoaded', function () {
+                document.body.dispatchEvent(new Event("refreshSessions"));
+                const calendarEl = document.getElementById('calendar');
+                calendar = new FullCalendar.Calendar(calendarEl, {
+                    initialView: 'dayGridMonth',
+                    editable: true,  // فعال‌سازی drag & drop و resize
+                    eventDurationEditable: true,  // اجازه تغییر طول زمان
+                    selectable: true,
+                    height: 'auto',
+                    headerToolbar: {
+                        left: 'prev,next today',
+                        center: 'title',
+                        right: 'timeGridDay,timeGridWeek,dayGridMonth'
+                    },
+
+                    events: '/planner/api/events/',
+
+                    eventDrop: function (info) {
+                        updateEventOnServer(info.event, info.revert);
+                    },
+
+                    eventResize: function (info) {
+                        updateEventOnServer(info.event, info.revert);
+                    },
+
+
+                    eventDidMount: function (info) {
+                        info.el.style.backgroundColor = info.event.backgroundColor;
+                        info.el.style.borderColor = info.event.borderColor;
+                        info.el.style.color = "#000";  // مطمئن شو متن دیده می‌شه
+                        info.el.style.borderRadius = "6px";
+                        info.el.style.padding = "2px";
+                    },
+                    dateClick: function (info) {
+                        alert('The day you click is: ' + info.dateStr);
+                        // اینجا می‌تونی HTMX modal باز کنی
+                    },
+                    eventClick: function (info) {
+                        const note = info.event.extendedProps.note;
+                        const subject = info.event.extendedProps.subject;
+                        const start = info.event.start.toLocaleTimeString();
+                        const end = info.event.end.toLocaleTimeString();
+
+                        alert(`Title: ${subject}\nNote: ${note}\nTime: ${start} to ${end}`);
+                    },
+                    datesSet: function (info) {
+                        const start = info.start.toISOString();
+                        const end = info.end.toISOString();
+                        htmx.ajax('GET', '{% url "planner:sessions" %}', {
+                            target: '#session-list',
+                            swap: 'innerHTML',
+                            values: {
+                                start: start,
+                                end: end
+                            }
+                        });
+                    }
                 });
-        }
 
-        let calendar;  // قابل دسترسی تو همه توابع
-
-
-        document.addEventListener('DOMContentLoaded', function () {
-            document.body.dispatchEvent(new Event("refreshSessions"));
-            const calendarEl = document.getElementById('calendar');
-            calendar = new FullCalendar.Calendar(calendarEl, {
-                initialView: 'dayGridMonth',
-                editable: true,  // فعال‌سازی drag & drop و resize
-                eventDurationEditable: true,  // اجازه تغییر طول زمان
-                selectable: true,
-                height: 'auto',
-                headerToolbar: {
-                    left: 'prev,next today',
-                    center: 'title',
-                    right: 'timeGridDay,timeGridWeek,dayGridMonth'
-                },
-
-                events: '/planner/api/events/',
-
-                eventDrop: function (info) {
-                    updateEventOnServer(info.event, info.revert);
-                },
-
-                eventResize: function (info) {
-                    updateEventOnServer(info.event, info.revert);
-                },
-
-
-                eventDidMount: function (info) {
-                    info.el.style.backgroundColor = info.event.backgroundColor;
-                    info.el.style.borderColor = info.event.borderColor;
-                    info.el.style.color = "#000";  // مطمئن شو متن دیده می‌شه
-                    info.el.style.borderRadius = "6px";
-                    info.el.style.padding = "2px";
-                },
-                dateClick: function (info) {
-                    alert('The day you click is: ' + info.dateStr);
-                    // اینجا می‌تونی HTMX modal باز کنی
-                },
-                eventClick: function (info) {
-                    const note = info.event.extendedProps.note;
-                    const subject = info.event.extendedProps.subject;
-                    const start = info.event.start.toLocaleTimeString();
-                    const end = info.event.end.toLocaleTimeString();
-
-                    alert(`Title: ${subject}\nNote: ${note}\nTime: ${start} to ${end}`);
-                }
+                calendar.render();
             });
 
-            calendar.render();
-        });
-    </script>
-</div>
+
+
+        </script>
+    </div>
 </div>
 </div>
 {% endblock %}

@@ -1,14 +1,15 @@
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404, redirect
-from planner.models import subject, studysession
+from planner.models import *
 from .forms import SubjectForm
 from django.urls import reverse
 from django.http import JsonResponse
-from datetime import datetime
+from datetime import datetime, timedelta
 from django.utils import timezone
 from django.views.decorators.csrf import csrf_exempt
 import json
 from django.utils.dateparse import parse_datetime
+
 
 def subject_list(request):
     subjects = subject.objects.all()
@@ -16,9 +17,39 @@ def subject_list(request):
 
 
 def session_list(request):
-    sessions = studysession.objects.select_related('subject').order_by('-start_session')
     subjects = subject.objects.all()
+    start_str = request.GET.get('start')
+    end_str = request.GET.get('end')
+    if start_str and end_str:
+        start = timezone.make_naive(parse_datetime(start_str))
+        end = timezone.make_naive(parse_datetime(end_str))
+
+    else:
+        start = timezone.now().replace(day=1, hour=0, minute=0)
+        end = (start + timedelta(days=35)).replace(day=1)
+
+    # تولید جلسات از recurrence
+    recurring_sessions = RecurringStudySession.objects.all()
+
+    for recurring in recurring_sessions:
+        for date in recurring.recurrence.between(start, end):
+            dt_start = datetime.combine(date, recurring.start_time)
+            dt_end = datetime.combine(date, recurring.end_time)
+            session = studysession(
+                title=recurring.title,
+                subject=recurring.subject,
+                start=dt_start,
+                end=dt_end,
+                recurring=recurring
+            )
+            session.save()
+
+    sessions = list(studysession.objects.filter(start_session__gte=start, end_session__lte=end))
     return render(request, 'session.html', {'sessions': sessions, 'subjects': subjects})
+
+
+
+
 
 def subject_create(request):
     if request.method == "POST":

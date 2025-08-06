@@ -1,5 +1,6 @@
 from django import forms
-from .models import subject,studysession
+from .models import *
+from recurrence.forms import RecurrenceField
 
 class SubjectForm(forms.ModelForm):
     class Meta:
