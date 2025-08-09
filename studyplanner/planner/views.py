@@ -31,18 +31,34 @@ def session_list(request):
     # تولید جلسات از recurrence
     recurring_sessions = RecurringStudySession.objects.all()
 
-    for recurring in recurring_sessions:
-        for date in recurring.recurrence.between(start, end):
-            dt_start = datetime.combine(date, recurring.start_time)
-            dt_end = datetime.combine(date, recurring.end_time)
-            session = studysession(
-                title=recurring.title,
-                subject=recurring.subject,
-                start=dt_start,
-                end=dt_end,
-                recurring=recurring
+    # skipped_dates_by_recurring = {
+    #     s.recurring_id: set()
+    #     for s in SkippedOccurrence.objects.all()
+    # }
+    # for s in SkippedOccurrence.objects.all():
+    #     skipped_dates_by_recurring[s.recurring_id].add(s.date)
+
+    for recurring_session in recurring_sessions:
+        for recurring_date in recurring_session.recurrence.between(start, end):
+            # if date in skipped_dates_by_recurring.get(recurring.id, set()):
+            #      continue
+
+            dt_start = datetime.combine(recurring_date, recurring_session.start_time)
+            dt_end = datetime.combine(recurring_date, recurring_session.end_time)
+            changed_session = SkippedOccurrence.objects.filter(recurring = recurring_session, date = recurring_date)
+            if not studysession.objects.filter(
+                start_session=dt_start,
+                end_session=dt_end,
+                recurring=recurring_session
+            ).exists() and (len(changed_session) == 0):
+                session = studysession(
+                title=recurring_session.title,
+                subject=recurring_session.subject,
+                start_session=dt_start,
+                end_session=dt_end,
+                recurring=recurring_session
             )
-            session.save()
+                session.save()
 
     sessions = list(studysession.objects.filter(start_session__gte=start, end_session__lte=end))
     return render(request, 'session.html', {'sessions': sessions, 'subjects': subjects})
@@ -101,6 +117,11 @@ def delete_session(request):
     if request.method == 'POST':
         session_id = request.POST.get("session_id")
         ses = studysession.objects.get(id=session_id)
+        if ses.recurring:
+            SkippedOccurrence.objects.get_or_create(
+            recurring=ses.recurring,
+            date=ses.start_session.date()
+            )   
         ses.delete()
     return HttpResponseRedirect(reverse('planner:index'))
 
@@ -108,6 +129,15 @@ def edit_session(request):
     if request.method == "POST":
         session_id = request.POST.get("id")
         session = get_object_or_404(studysession, id=session_id)
+
+        old_date = session.start_session.date()
+        if session.recurring:
+            new_date = parse_datetime(request.POST.get("start_session")).date()
+            if old_date != new_date:
+                SkippedOccurrence.objects.get_or_create(
+                recurring=session.recurring,
+                date=old_date
+        )
 
         # سپس فیلدها رو آپدیت کن
         session.title = request.POST.get("title")
@@ -118,10 +148,11 @@ def edit_session(request):
         # subject
         subject_id = request.POST.get("subject")
         session.subject_id = subject_id
-        
+
+
         session.save()
 
-        return redirect("planner:index")  # یا هر صفحه‌ای که می‌خوای بعدش بره
+        return redirect("planner:index")
 
 
 def events_api(request):

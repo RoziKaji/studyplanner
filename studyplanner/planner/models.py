@@ -26,6 +26,16 @@ class RecurringStudySession(models.Model):
     start_time = models.TimeField()
     end_time = models.TimeField()
     recurrence = RecurrenceField()
+
+class SkippedOccurrence(models.Model):
+    recurring = models.ForeignKey(RecurringStudySession, on_delete=models.CASCADE)
+    date = models.DateField()
+
+    class Meta:
+        unique_together = ('recurring', 'date')
+
+    def __str__(self):
+        return f"Skipped {self.date} for {self.recurring.title}"
     
 class studysession(models.Model):
     subject = models.ForeignKey(subject, on_delete=models.CASCADE)
